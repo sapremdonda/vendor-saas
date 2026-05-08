@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Rfq;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Controllers\VendorController;
 
 class RfqController extends Controller
 {

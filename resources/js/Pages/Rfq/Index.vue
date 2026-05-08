@@ -18,8 +18,9 @@ const submit = () => form.post(route('vendors.store'), { onSuccess: () => form.r
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                
                 <div class="bg-white p-6 shadow-sm rounded-lg border-t-4 border-blue-600">
-                    <h3 class="font-bold mb-4">Add Vendor</h3>
+                    <h3 class="font-bold mb-4 text-slate-900">Add Vendor</h3>
                     <form @submit.prevent="submit" class="space-y-4">
                         <div>
                             <InputLabel value="Company Name" />
@@ -40,21 +41,22 @@ const submit = () => form.post(route('vendors.store'), { onSuccess: () => form.r
                 <div class="md:col-span-2 bg-white shadow-sm rounded-lg overflow-hidden border-t-4 border-slate-900">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-slate-900 text-white text-xs uppercase font-bold">
+                            <tr class="bg-slate-900 text-white text-xs uppercase font-bold tracking-wider">
                                 <th class="p-4">Company</th>
                                 <th class="p-4">Contact</th>
                                 <th class="p-4">Email</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="v in vendors" class="border-b text-sm hover:bg-gray-50">
-                                <td class="p-4 font-bold">{{ v.company }}</td>
-                                <td class="p-4">{{ v.name }}</td>
+                            <tr v-for="v in vendors" :key="v.id" class="border-b text-sm hover:bg-gray-50">
+                                <td class="p-4 font-bold text-slate-900">{{ v.company }}</td>
+                                <td class="p-4 text-slate-700">{{ v.name }}</td>
                                 <td class="p-4 text-blue-600 underline">{{ v.email }}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+
             </div>
         </div>
     </AuthenticatedLayout>

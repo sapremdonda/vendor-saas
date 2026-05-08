@@ -5,6 +5,7 @@ use App\Http\Controllers\RfqController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\VendorController;
 
 Route::get('/', function () {
     return redirect()->route('login');
