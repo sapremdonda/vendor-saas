@@ -15,19 +15,19 @@ class VendorController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:vendors',
-            'company' => 'required|string|max:255',
-        ]);
+        {
+            $request->validate([
+                'company' => 'required|string|max:255',
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+            ]);
 
-        Vendor::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'company' => $request->company,
-        ]);
-
-        return redirect()->route('vendors.index');
-    }
+            \App\Models\Vendor::create([
+                'company_id' => auth()->user()->company_id,
+                'company' => $request->company,
+                'name' => $request->name,
+                'email' => $request->email,
+            ]);
+            return back();
+        }
 }

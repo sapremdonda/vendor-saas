@@ -6,12 +6,13 @@ import Swal from 'sweetalert2';
 
 const props = defineProps({
     rfq: Object,
-    availableVendors: Array,
+    availableVendors: {
+        type: Array,
+        default: () => [] // Safety shield!
+    },
 });
 
-const inviteForm = useForm({
-    vendor_id: '',
-});
+const inviteForm = useForm({ vendor_id: '' });
 
 const uninvitedVendors = computed(() => {
     const all = props.availableVendors || [];
@@ -41,11 +42,11 @@ const sendInvite = () => {
 const deleteRfq = () => {
     Swal.fire({
         title: 'Confirm Deletion',
-        text: "This RFQ will be permanently removed from the system.",
+        text: "This RFQ will be permanently removed.",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#2563eb',
-        cancelButtonColor: '#0f172a',
+        confirmButtonColor: '#2563eb', // Blue
+        cancelButtonColor: '#0f172a',  // Black
         confirmButtonText: 'Confirm Delete'
     }).then((result) => {
         if (result.isConfirmed) {
@@ -56,19 +57,22 @@ const deleteRfq = () => {
 </script>
 
 <template>
-    <Head :title="rfq.title" />
+    <Head :title="rfq?.title || 'RFQ'" />
 
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-slate-900 leading-tight">{{ rfq.title }}</h2>
+                <h2 class="font-semibold text-xl text-slate-900 leading-tight">{{ rfq?.title }}</h2>
                 <div class="flex space-x-3">
-                    <Link :href="route('rfqs.edit', rfq.id)" class="bg-slate-900 text-white px-4 py-2 rounded-md font-bold hover:bg-blue-600 transition">
+                    <Link v-if="rfq?.id" :href="route('rfqs.edit', rfq.id)" class="bg-slate-900 text-white px-4 py-2 rounded-md font-bold hover:bg-blue-600 transition">
                         Edit
                     </Link>
                     <button @click="deleteRfq" class="border-2 border-slate-900 text-slate-900 px-4 py-2 rounded-md font-bold hover:bg-slate-900 hover:text-white transition">
                         Delete
                     </button>
+                    <Link :href="route('rfqs.index')" class="bg-gray-200 text-slate-900 px-4 py-2 rounded-md font-bold hover:bg-gray-300 transition">
+                        Back
+                    </Link>
                 </div>
             </div>
         </template>
@@ -78,23 +82,23 @@ const deleteRfq = () => {
                 <div class="md:col-span-2 space-y-6">
                     <div class="bg-white shadow-sm sm:rounded-lg p-6 border-t-4 border-slate-900">
                         <h3 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4">Description</h3>
-                        <p class="text-gray-700 whitespace-pre-wrap">{{ rfq.description }}</p>
+                        <p class="text-gray-700 whitespace-pre-wrap">{{ rfq?.description }}</p>
                     </div>
                 </div>
 
                 <div class="space-y-6">
                     <div class="bg-white shadow-sm sm:rounded-lg p-6 border-t-4 border-blue-600">
-                        <h3 class="text-lg font-bold text-slate-900 mb-4">Status & Deadline</h3>
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Summary</h3>
                         <div class="mb-4">
-                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase">{{ rfq.status }}</span>
+                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase">{{ rfq?.status || 'Unknown' }}</span>
                         </div>
-                        <p class="text-sm font-bold text-slate-900 uppercase">Deadline: {{ new Date(rfq.deadline).toLocaleDateString() }}</p>
+                        <p class="text-sm font-bold text-slate-900 uppercase">Deadline: <span v-if="rfq?.deadline">{{ new Date(rfq.deadline).toLocaleDateString() }}</span></p>
                     </div>
 
                     <div class="bg-white shadow-sm sm:rounded-lg p-6 border-t-4 border-slate-900">
                         <h3 class="text-md font-bold text-slate-900 mb-4 border-b pb-2">Bidding Center</h3>
                         <ul class="mb-4 space-y-2">
-                            <li v-for="v in rfq.vendors" :key="v.id" class="text-sm p-2 bg-gray-50 border rounded flex justify-between">
+                            <li v-for="v in rfq?.vendors || []" :key="v.id" class="text-sm p-2 bg-gray-50 border rounded flex justify-between">
                                 <span>{{ v.company }}</span>
                                 <span class="text-blue-600 font-bold text-xs uppercase">Invited</span>
                             </li>
@@ -104,7 +108,7 @@ const deleteRfq = () => {
                                 <option value="" disabled>Select Vendor</option>
                                 <option v-for="v in uninvitedVendors" :key="v.id" :value="v.id">{{ v.company }}</option>
                             </select>
-                            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md font-bold hover:bg-slate-900 transition">
+                            <button type="submit" :disabled="uninvitedVendors.length === 0" class="w-full bg-blue-600 text-white py-2 rounded-md font-bold hover:bg-slate-900 transition disabled:opacity-50">
                                 Invite Vendor
                             </button>
                         </form>
