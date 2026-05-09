@@ -50,34 +50,34 @@ class RfqController extends Controller
         ]);
     }
     public function edit(Request $request, Rfq $rfq)
-    {
-        if ($rfq->company_id !== $request->user()->company_id) abort(403);
-        return Inertia::render('Rfq/Edit', ['rfq' => $rfq]);
-    }
+        {
+            if ($rfq->company_id !== $request->user()->company_id) abort(403);
+            
+            return Inertia::render('Rfq/Edit', ['rfq' => $rfq]);
+        }
 
     public function update(Request $request, Rfq $rfq)
-    {
-        if ($rfq->company_id !== $request->user()->company_id) abort(403);
+        {
+            if ($rfq->company_id !== $request->user()->company_id) abort(403);
 
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'items_required' => 'nullable|string',
-            'deadline' => 'required|date',
-            'status' => 'required|string',
-        ]);
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'deadline' => 'required|date',
+                'status' => 'required|string',
+            ]);
 
-        $rfq->update($request->only('title', 'description', 'items_required', 'deadline', 'status'));
+            $rfq->update($request->only('title', 'description', 'deadline', 'status'));
 
-        return redirect()->route('rfqs.show', $rfq->id);
-    }
+            return redirect()->route('rfqs.show', $rfq->id);
+        }
 
     public function destroy(Request $request, Rfq $rfq)
-    {
-        if ($rfq->company_id !== $request->user()->company_id) abort(403);
-        
-        $rfq->delete();
+        {
+            if ($rfq->company_id !== $request->user()->company_id) abort(403);
+            
+            $rfq->delete();
 
-        return redirect()->route('rfqs.index');
-    }
+            return redirect()->route('rfqs.index');
+        }
 }
